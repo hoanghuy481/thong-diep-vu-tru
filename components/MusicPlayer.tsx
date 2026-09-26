@@ -33,7 +33,7 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
   const volumeRef = useRef(1);
   volumeRef.current = volume;
 
-  // lấy danh sách nhạc từ thư mục /music (qua /api/tracks)
+  // lấy danh sách nhạc trong public/music (qua /api/tracks)
   useEffect(() => {
     let cancelled = false;
     fetch("/api/tracks")
@@ -376,7 +376,7 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
         </div>
       </div>
 
-      {/* phần tử audio ẩn — phát nhạc từ thư mục /music */}
+      {/* phần tử audio ẩn — phát nhạc được Next.js phục vụ từ public/music */}
       {/* chỉ render khi đã có danh sách nhạc, tránh sự kiện error do chưa có src */}
       {tracks.length > 0 && (
         <audio

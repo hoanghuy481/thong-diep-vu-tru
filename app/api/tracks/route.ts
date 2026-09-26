@@ -3,7 +3,7 @@ import path from "path";
 
 export const dynamic = "force-dynamic"; // luôn đọc lại thư mục mỗi lần gọi
 
-const MUSIC_DIR = path.join(process.cwd(), "music");
+const MUSIC_DIR = path.join(process.cwd(), "public", "music");
 const AUDIO_EXTENSIONS = new Set([
   ".mp3",
   ".m4a",
@@ -21,7 +21,7 @@ export async function GET() {
       .filter(
         (entry) =>
           entry.isFile() &&
-          AUDIO_EXTENSIONS.has(path.extname(entry.name).toLowerCase())
+          AUDIO_EXTENSIONS.has(path.extname(entry.name).toLowerCase()),
       )
       .map((entry) => entry.name)
       .sort((a, b) => a.localeCompare(b, "vi"));
