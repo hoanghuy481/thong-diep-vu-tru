@@ -1,23 +1,34 @@
 import type { Metadata } from "next";
-import { Orbitron, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Be_Vietnam_Pro, JetBrains_Mono, Orbitron } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const orbitron = Orbitron({
   subsets: ["latin"],
-  weight: ["500", "700", "900"],
+  weight: ["500", "600", "700", "800", "900"],
   variable: "--font-orbitron",
+  display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ["vietnamese", "latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-space-grotesk",
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+  subsets: ["vietnamese", "latin"],
   weight: ["400", "500"],
   variable: "--font-jetbrains",
+  display: "swap",
+});
+
+const coiny = localFont({
+  src: "./fonts/Coiny-Regular.ttf",
+  weight: "400",
+  variable: "--font-coiny",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body
-        className={`${orbitron.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+        className={`${orbitron.variable} ${beVietnamPro.variable} ${jetbrainsMono.variable} ${coiny.variable}`}
       >
         {children}
       </body>

@@ -88,7 +88,7 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
     });
   }, [tracks]);
 
-  // step 3: tạm dừng; rời step 3: phát lại nếu trước đó đang phát
+  // tạm dừng theo yêu cầu; phát lại khi bỏ tạm dừng nếu trước đó đang phát
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;

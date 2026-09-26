@@ -17,6 +17,7 @@ type Step = 1 | 2 | 3 | 4;
 export default function Home() {
   const [step, setStep] = useState<Step>(1);
   const [phase, setPhase] = useState<Phase>("idle");
+  const [youtubePlaying, setYoutubePlaying] = useState(false);
   const timers = useRef<number[]>([]);
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
@@ -25,6 +26,10 @@ export default function Home() {
     const pending = timers.current;
     return () => pending.forEach((t) => window.clearTimeout(t));
   }, []);
+
+  useEffect(() => {
+    if (step !== 3) setYoutubePlaying(false);
+  }, [step]);
 
   const switchStep = useCallback((target: Step) => {
     if (phaseRef.current !== "idle") return;
@@ -43,7 +48,7 @@ export default function Home() {
         setPhase("entering");
         // Đợi 1 frame để class opacity-0 được áp trước khi chuyển sang opacity-100
         timers.current.push(window.setTimeout(() => setPhase("idle"), 30));
-      }, EXIT_MS)
+      }, EXIT_MS),
     );
   }, []);
 
@@ -59,7 +64,7 @@ export default function Home() {
       <StarField />
 
       {/* nhạc nền sống suốt các step, tạm dừng ở step 3 rồi phát lại khi rời đi */}
-      <MusicPlayer paused={step === 3} />
+      <MusicPlayer paused={step === 3 && youtubePlaying} />
 
       {/* nút quay lại, hiện từ step 2 trở đi */}
       {step > 1 && (
@@ -103,7 +108,10 @@ export default function Home() {
             }`}
             style={{ transitionDuration: `${ENTER_MS}ms` }}
           >
-            <StepThree onNext={goToStepFour} />
+            <StepThree
+              onNext={goToStepFour}
+              onYouTubePlay={() => setYoutubePlaying(true)}
+            />
           </div>
         )}
         {step === 4 && (

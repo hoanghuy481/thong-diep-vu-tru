@@ -18,6 +18,7 @@ const config: Config = {
         display: ["var(--font-orbitron)", "sans-serif"],
         body: ["var(--font-space-grotesk)", "sans-serif"],
         mono: ["var(--font-jetbrains)", "monospace"],
+        coiny: ["var(--font-coiny)", "sans-serif"],
       },
       keyframes: {
         twinkle: {

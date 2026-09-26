@@ -5,6 +5,17 @@ import SlotFrame from "./SlotFrame";
 import NavShuttleButton from "./NavShuttleButton";
 
 const LETTERS = ["B", "I", "N", "H"];
+const LETTER_COLORS: Partial<Record<string, string>> = {
+  B: "#d81b60",
+  N: "#a3e635",
+  H: "#3b82f6",
+};
+const LETTER_WIDTH_SCALE: Record<string, number> = {
+  B: 1.08,
+  I: 0.92,
+  N: 1.08,
+  H: 1.08,
+};
 const FRAME_WIDTH = "5cm";
 const FRAME_GAP = "10px";
 const ROW_WIDTH = `calc(4 * ${FRAME_WIDTH} + 3 * ${FRAME_GAP})`;
@@ -34,7 +45,7 @@ export default function StepTwo({ onNext }: { onNext: () => void }) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // Đếm ngược 10 giây sau khi bấm khởi hành; về 0 thì sang trạm kế tiếp
+  // Đếm ngược 20 giây sau khi bấm khởi hành; về 0 thì sang trạm kế tiếp
   useEffect(() => {
     if (countdown === null) return;
     if (countdown === 0) {
@@ -48,7 +59,7 @@ export default function StepTwo({ onNext }: { onNext: () => void }) {
   const handleLaunch = () => {
     if (launching || revealed) return;
     setLaunching(true);
-    setCountdown(20);
+    setCountdown(25);
   };
 
   return (
@@ -60,14 +71,14 @@ export default function StepTwo({ onNext }: { onNext: () => void }) {
         <div className="relative mt-3">
           {/* hướng dẫn luôn chiếm chỗ (ẩn đi chứ không bỏ khỏi layout) để khung dưới không xê dịch */}
           <h2
-            className={`font-display text-lg font-bold text-ice sm:text-xl ${
+            className={`font-coiny text-lg font-normal text-ice sm:text-xl ${
               countdown !== null ? "invisible" : ""
             }`}
           >
-            Hãy gấp đôi sticky note lại hoặc dán chồng lên 1 nửa sau đó đặt vào
-            đây
+            Đặt sticky note đầu tiên vào khung, sau đó đặt cái thứ hai chồng lên
+            một nửa tấm thứ nhất nhé 😎
             <br />
-            Nhớ đặt đúng vị trí trước và sau nha 😎
+            Sau khi đặt xong thì bấm khởi hành để xem kết quả nè.
           </h2>
 
           {/* đếm ngược đè lên, căn giữa đúng vị trí cũ */}
@@ -81,7 +92,7 @@ export default function StepTwo({ onNext }: { onNext: () => void }) {
           )}
         </div>
       </div>
-
+      {/* khung chứa các sticky note và đường bay của tàu */}
       <div className="max-w-full overflow-x-auto pb-2">
         <div
           className="mx-auto flex flex-col"
@@ -128,11 +139,12 @@ export default function StepTwo({ onNext }: { onNext: () => void }) {
                   }}
                 >
                   <span
-                    className="block font-display text-4xl font-black leading-none text-stardust"
+                    className="block font-coiny text-4xl font-normal leading-none text-stardust"
                     style={{
-                      clipPath: "inset(50% 0 0 0)",
                       fontSize: "11.25rem",
-                      transform: "translateY(-40%)",
+                      transform: `translateY(-30%) scaleX(${LETTER_WIDTH_SCALE[letter]})`,
+                      color: LETTER_COLORS[letter],
+                      WebkitTextStroke: "7px currentColor",
                     }}
                   >
                     {letter}
@@ -166,6 +178,17 @@ export default function StepTwo({ onNext }: { onNext: () => void }) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex h-20 flex-col justify-center text-center sm:h-16">
+        <h2
+          className={`font-coiny text-lg font-normal text-ice sm:text-xl ${
+            countdown === null ? "invisible" : ""
+          }`}
+        >
+          {`Nhìn ra được chữ gì hong :))`}
+          <br />
+          Thấy cute thì 📸 lại 1 cái ik
+        </h2>
       </div>
     </div>
   );

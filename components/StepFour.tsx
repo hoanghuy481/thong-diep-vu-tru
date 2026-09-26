@@ -9,42 +9,29 @@ export default function StepFour() {
   return (
     <div className="relative z-10 flex w-full flex-col items-center gap-6 px-4">
       <div className="text-center">
+        {/* title */}
         <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-nebula-soft/80">
-          Trạm vũ trụ // Khoang mật mã
+          Trạm vũ trụ // Khoang tâm sự
         </p>
-        <h2 className="mt-3 font-display text-lg font-bold text-ice sm:text-xl">
-          Toàn bộ thông điệp dành cho em 💌
+        <h2 className="font-coiny mt-3 text-lg font-bold text-stardust sm:text-xl">
+          Những thông điệp cuối cùng
         </h2>
       </div>
 
-      <div className="glass-panel w-full max-w-2xl overflow-x-auto rounded-2xl p-4 sm:p-6">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-nebula-soft/30">
-              <th className="py-2 pr-4 font-mono text-[11px] uppercase tracking-[0.25em] text-nebula-soft">
-                Mục
-              </th>
-              <th className="py-2 font-mono text-[11px] uppercase tracking-[0.25em] text-nebula-soft">
-                Nội dung
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {MESSAGE_ROWS.map((row) => (
-              <tr
-                key={row.label}
-                className="border-b border-nebula-soft/15 last:border-0"
-              >
-                <td className="py-3 pr-4 align-top font-mono text-sm text-stardust">
-                  {row.label}
-                </td>
-                <td className="py-3 align-top font-body text-sm leading-relaxed text-ice">
-                  {row.content}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className=" glass-panel w-full max-w-2xl overflow-x-auto rounded-2xl p-4 sm:p-6">
+        <p className="font-coiny font-bold text-ice ">
+          {` Xem tới đây thì chắc là em cũng hiểu rồi đúng hong :)). Anh thực sự thích em lắm
+          á, thời gian qua anh muốn bắt chuyện với em rất nhiều nhưng mà em biết đấy, 
+          sự bận rộn luôn chiếm phần lớn, không chỉ anh mà cả em nữa. Cơ mà chắc là em cũng muốn biết
+          vì sao anh lại thích em và từ lúc nào nhỉ? Nhưng cái này thì phải nói trực tiếp vì nó nhiều lắm 
+          không thể kể hết trên này được 🤧.`}
+          <br />
+          Vài ngày nữa là 20 tháng 10 á 🌹, anh đoán trong tuần em sẽ bận nên
+          khó để có một cuộc gặp gỡ được 😢. Nếu em có thể sắp xếp hoặc không
+          thì anh mong đâu đó trong cuối tuần mình có thể gặp nhau 🫶. Còn giờ
+          thì nghe nhạc đi, những bài này là những bài đã khiến anh luôn nghĩ về
+          em đó...
+        </p>
       </div>
     </div>
   );
