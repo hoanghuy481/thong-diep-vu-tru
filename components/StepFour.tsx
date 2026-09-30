@@ -1,10 +1,3 @@
-// Bảng ghi nội dung thông điệp — sửa nội dung trực tiếp ở đây
-const MESSAGE_ROWS = [
-  { label: "Người gửi", content: "..." },
-  { label: "Người nhận", content: "..." },
-  { label: "Thông điệp", content: "..." },
-];
-
 export default function StepFour() {
   return (
     <div className="relative z-10 flex w-full flex-col items-center gap-6 px-4">
