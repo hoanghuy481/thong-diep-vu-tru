@@ -76,9 +76,9 @@ export default function StepTwo({ onNext }: { onNext: () => void }) {
             }`}
           >
             Đặt sticky note đầu tiên vào khung, sau đó đặt cái thứ hai chồng lên
-            một nửa tấm thứ nhất nhé 😎
+            một nửa tấm thứ nhất nhe 😎
             <br />
-            Sau khi đặt xong thì bấm khởi hành để xem kết quả nè.
+            Sau khi đặt xong thì bấm "khởi hành" ở dưới á
           </h2>
 
           {/* đếm ngược đè lên, căn giữa đúng vị trí cũ */}

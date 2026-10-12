@@ -31,23 +31,22 @@ export default function StepThree({
         </p>
         {/* content */}
         <h2 className="mt-3 font-coiny text-lg font-normal text-ice sm:text-xl">
-          Dưới đây là mọi suy nghĩ về em trong khoảng thời gian qua, anh đã đưa
-          vào giai điệu này...
+          Xem cái này đi 🎧 Bài này anh viết đó
           <br />
-          Bao gồm cả quá trình làm mấy trò con nít này nữa 🥹
+          {`Bao gồm cả quá trình làm mấy trò con nít này nữa :))`}
         </h2>
       </div>
 
       {/* khung chứa video */}
-      <div className="glass-panel w-full max-w-4xl rounded-2xl p-2 sm:p-3">
+      <div className="glass-panel w-full max-w-5xl rounded-2xl p-2 sm:p-3">
         <div className="aspect-video overflow-hidden rounded-xl">
           <iframe
             ref={iframeRef}
             width="1801"
             height="1013"
             className="h-full w-full border-0"
-            src="https://www.youtube.com/embed/Hvhg3vCJBIE"
-            title='ASTRO B - "You are my whole world" ft BIG P'
+            src="https://www.youtube.com/embed/s8v0EVfB7eE"
+            title="ĐTER - unofficial (soi kĩ nhe)"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
@@ -61,7 +60,7 @@ export default function StepThree({
         <ShuttleButton
           label="Trạm cuối"
           variant="yes"
-          scale={2}
+          scale={1.5}
           onClick={onNext}
         />
       </div>

@@ -18,7 +18,9 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
   pausedRef.current = paused;
   const wasPlayingRef = useRef(false);
   const needsGestureRef = useRef(false);
+  const autoplayPendingRef = useRef(false);
   const playingRef = useRef(false);
+  const fadeIntervalRef = useRef<number | null>(null);
 
   const [tracks, setTracks] = useState<Track[]>([]);
   const [index, setIndex] = useState(0);
@@ -32,6 +34,45 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
   const [error, setError] = useState(false);
   const volumeRef = useRef(1);
   volumeRef.current = volume;
+
+  const clearVolumeFade = () => {
+    if (fadeIntervalRef.current === null) return;
+    window.clearInterval(fadeIntervalRef.current);
+    fadeIntervalRef.current = null;
+  };
+
+  const playWithFade = (audio: HTMLAudioElement) => {
+    clearVolumeFade();
+    const targetVolume = volumeRef.current;
+    audio.volume = 0;
+    audio.muted = false;
+    setMuted(false);
+
+    audio
+      .play()
+      .then(() => {
+        needsGestureRef.current = false;
+        if (targetVolume === 0) return;
+
+        let step = 0;
+        const totalSteps = 40;
+        fadeIntervalRef.current = window.setInterval(() => {
+          if (audio.paused) {
+            clearVolumeFade();
+            return;
+          }
+          step += 1;
+          audio.volume = Math.min(
+            targetVolume,
+            (targetVolume * step) / totalSteps,
+          );
+          if (step >= totalSteps) clearVolumeFade();
+        }, 50);
+      })
+      .catch(() => {
+        needsGestureRef.current = true;
+      });
+  };
 
   // lấy danh sách nhạc trong public/music (qua /api/tracks)
   useEffect(() => {
@@ -51,6 +92,7 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
             .replace(/\s*\[[^\]]*\]\s*$/, "")
             .trim(),
         }));
+        autoplayPendingRef.current = true;
         setTracks(list);
       })
       .catch(() => setError(true));
@@ -72,20 +114,10 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
     }
   }, []);
 
-  // khi có danh sách nhạc: phát bài đầu tiên, mặc định MỞ LOA
+  // chờ audio sẵn sàng trước khi thử autoplay
   useEffect(() => {
     if (!tracks.length) return;
     setTitle(tracks[0].title);
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.volume = volumeRef.current;
-    audio.muted = false;
-    setMuted(false);
-    // mặc định mở loa; trình duyệt có thể chặn autoplay có tiếng → giữ nguyên
-    // trạng thái mở loa và phát ở lần tương tác đầu tiên (effect bên dưới)
-    audio.play().catch(() => {
-      needsGestureRef.current = true;
-    });
   }, [tracks]);
 
   // tạm dừng theo yêu cầu; phát lại khi bỏ tạm dừng nếu trước đó đang phát
@@ -110,13 +142,17 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
     const handle = (event: Event) => {
       // bấm bên trong player thì để các nút tự xử lý
       if (cardRef.current?.contains(event.target as Node)) return;
+      const audio = audioRef.current;
+      if (!audio || pausedRef.current) return;
+      if (
+        audio.paused &&
+        (autoplayPendingRef.current || needsGestureRef.current)
+      ) {
+        autoplayPendingRef.current = false;
+        playWithFade(audio);
+      }
       window.removeEventListener("pointerdown", handle);
       window.removeEventListener("keydown", handle);
-      const audio = audioRef.current;
-      if (audio && needsGestureRef.current) {
-        needsGestureRef.current = false;
-        if (audio.paused && !pausedRef.current) audio.play().catch(() => {});
-      }
     };
     window.addEventListener("pointerdown", handle);
     window.addEventListener("keydown", handle);
@@ -125,6 +161,8 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
       window.removeEventListener("keydown", handle);
     };
   }, []);
+
+  useEffect(() => () => clearVolumeFade(), []);
 
   // forcePlay: dùng khi hết bài — lúc đó trình duyệt đã bắn `pause` trước `ended`
   // nên playingRef đã thành false, phải ép phát bài kế tiếp
@@ -148,9 +186,11 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
   const toggle = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    needsGestureRef.current = false;
-    if (audio.paused) audio.play().catch(() => {});
-    else audio.pause();
+    if (audio.paused) playWithFade(audio);
+    else {
+      clearVolumeFade();
+      audio.pause();
+    }
   };
 
   const next = (forcePlay = false) => {
@@ -170,6 +210,7 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
 
   const changeVolume = (delta: number) => {
     const nextVolume = Math.min(1, Math.max(0, volume + delta));
+    clearVolumeFade();
     setVolume(nextVolume);
     const audio = audioRef.current;
     if (!audio) return;
@@ -191,8 +232,10 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
   const toggleMute = () => {
     const audio = audioRef.current;
     if (!audio) return;
+    clearVolumeFade();
     if (audio.muted) {
       audio.muted = false;
+      audio.volume = volumeRef.current;
     } else {
       audio.muted = true;
     }
@@ -383,7 +426,12 @@ export default function MusicPlayer({ paused }: { paused: boolean }) {
           ref={audioRef}
           className="hidden"
           src={tracks[index]?.src}
-          preload="metadata"
+          preload="auto"
+          onCanPlay={(e) => {
+            if (!autoplayPendingRef.current || pausedRef.current) return;
+            autoplayPendingRef.current = false;
+            playWithFade(e.currentTarget);
+          }}
           onTimeUpdate={(e) => setCurrent(e.currentTarget.currentTime)}
           onLoadedMetadata={(e) => {
             setDuration(e.currentTarget.duration);
